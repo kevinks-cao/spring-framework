@@ -76,6 +76,8 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
 	}
 
 	/**
+	 * 从给定的xml文件中加载创建一个新的 ClassPathXmlApplicationContext，并自动刷新上下文
+	 * 一般为Spring容器的入口
 	 * Create a new ClassPathXmlApplicationContext, loading the definitions
 	 * from the given XML file and automatically refreshing the context.
 	 * @param configLocation resource location

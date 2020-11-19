@@ -76,6 +76,8 @@ public class FileSystemXmlApplicationContext extends AbstractXmlApplicationConte
 	}
 
 	/**
+	 * 从给定的xml文件中加载创建一个新的 FileSystemXmlApplicationContext，并自动刷新上下文
+	 * 一般为Spring容器的入口
 	 * Create a new FileSystemXmlApplicationContext, loading the definitions
 	 * from the given XML file and automatically refreshing the context.
 	 * @param configLocation file path
