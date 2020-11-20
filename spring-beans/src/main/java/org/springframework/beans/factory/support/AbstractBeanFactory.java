@@ -238,15 +238,21 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 * @return an instance of the bean
 	 * @throws BeansException if the bean could not be created
 	 */
+
+	// 真正实现IOC容器获取Bean的功能，也是触发依赖注入功能的入口
 	@SuppressWarnings("unchecked")
 	protected <T> T doGetBean(
 			String name, @Nullable Class<T> requiredType, @Nullable Object[] args, boolean typeCheckOnly)
 			throws BeansException {
 
+		// 根据指定的名称获取被管理的Bean的名称，剥离指定名称中对容器的相关依赖
+		// 如果指定的是别名，则将别名转换为规范的Bean名称
 		String beanName = transformedBeanName(name);
 		Object bean;
 
 		// Eagerly check singleton cache for manually registered singletons.
+		// 先从缓存中获取是否已经有被创建过的单例类型的Bean
+		// 对于单例模式的Bean整个IOC容器中只创建一次,不需要重复创建
 		Object sharedInstance = getSingleton(beanName);
 		if (sharedInstance != null && args == null) {
 			if (logger.isTraceEnabled()) {
@@ -258,17 +264,26 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					logger.trace("Returning cached instance of singleton bean '" + beanName + "'");
 				}
 			}
+
+			// 获取给定的Bean的实例对象，主要是完成FactoryBean的相关处理
 			bean = getObjectForBeanInstance(sharedInstance, name, beanName, null);
 		}
 
 		else {
 			// Fail if we're already creating this bean instance:
 			// We're assumably within a circular reference.
+			// 缓存没有正在创建的单例模式Bean
+			// 缓存中有已经创建的原型模式Bean
+			// 但是由于循环引用的问题导致实例化对象失败
 			if (isPrototypeCurrentlyInCreation(beanName)) {
 				throw new BeanCurrentlyInCreationException(beanName);
 			}
 
 			// Check if bean definition exists in this factory.
+			// 对IOC容器中是否存在指定名称的BeanDefinition进行检查，
+			// 首先检查是否能在当前的BeanFactory中获取所需的的Bean
+			// 如果不能，则委托当前容器的父级容器去查找，如还未能找到，
+			// 则继续沿容器的继承关系向父级容器查找
 			BeanFactory parentBeanFactory = getParentBeanFactory();
 			if (parentBeanFactory != null && !containsBeanDefinition(beanName)) {
 				// Not found -> check parent.

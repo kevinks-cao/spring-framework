@@ -122,6 +122,9 @@ public interface BeanFactory {
 	 * {@code myJndiObject} is a FactoryBean, getting {@code &myJndiObject}
 	 * will return the factory, not the instance returned by the factory.
 	 */
+
+	// 对FactoryBean的转义定义，因为如果使用bean的名字检索FactoryBean,
+	// 则会返回其生成的对象，而不会返回FactoryBean本身,如果需要返回FactoryBean则需要转义
 	String FACTORY_BEAN_PREFIX = "&";
 
 
